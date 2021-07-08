@@ -19,7 +19,6 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.delegate = self
         tableView.dataSource = self
         
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.leftBarButtonItem = self.editButtonItem
         
         tableView.rowHeight = UITableView.automaticDimension
@@ -30,16 +29,8 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
             let testItem = FoodItem(name: "便當\(i)", price: Int.random(in: 60...100), serving: Int.random(in: 1...10))
             self.foodList.append(testItem)
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(updateServingFromStepper(notification:)), name: .updateToList, object: nil)
     }
-    
-    @objc func updateServingFromStepper(notification: Notification) {
-                   if let newServing = notification.userInfo?["servingFromStepper"] as? Int {
-                       // 卡關：不知道該把 newServing 存到哪個 cell
-                   }
-               }
-    
+
     @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
         
         let alertController = UIAlertController(title: "新增項目", message: "", preferredStyle: UIAlertController.Style.alert)
@@ -56,9 +47,7 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
             let price = priceTextField.text ?? ""
             let serving = servingTextField.text ?? ""
             
-            
             let newFood = FoodItem(name: name, price: Int(price) ?? 0, serving: Int(serving) ?? 0)
-            //NotificationCenter.default.post(name: .servingUpdate, object: nil, userInfo: ["food" : newFood])
             
             self.foodList.append(newFood)
             self.tableView.reloadData()
@@ -103,24 +92,12 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.nameLabel.text = food.name
         cell.priceLabel.text = "$\(String(food.price)) / 每份"
         cell.servingLabel.text = "已選 \(String(food.serving)) 份"
-        
+        cell.stepper.value = Double(food.serving)
         cell.stepper.tag = indexPath.row
-        //cell.stepper.value = Double(food.serving)
-        cell.stepper.addTarget(self, action: #selector(stepperValueChanged(_:)), for: .valueChanged)
+        
         cell.delegate = self
         
-        NotificationCenter.default.post(name: .updateToStepper, object: nil, userInfo: ["servingFromList" : food.serving])
-        
         return cell
-    }
-    
-    @objc func stepperValueChanged(_ stepper: UIStepper) {
-        //use stepper.tag as index to fetch an object from your dataSource
-        let food = foodList[stepper.tag]
-        food.serving = Int(stepper.value)
-        //stepper.value = Double(food.serving)
-
-//        NotificationCenter.default.post(name: .updateToStepper, object: nil, userInfo: ["servingFromList" : food.serving])
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -156,21 +133,16 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
 extension ShoppingListVC: FoodTableViewCellDelegate {
     
     func stepper(_ stepper: UIStepper, at index: Int, didChangeValueTo newValue: Double) {
-        
-        
         // Process that change...
-        
         let indexPath = IndexPath(item: index, section: 0)
         guard let cell = tableView.cellForRow(at: indexPath) as? FoodTableViewCell else { return }
         // Send the value back to the cell
         let foodToBeUpdated = foodList[indexPath.row]
         
-        print("foodToBeUpdated.serving: \(foodToBeUpdated.serving)")
-        
-        //stepper.value = Double(foodToBeUpdated.serving)
-        
+        // print("foodToBeUpdated.serving: \(foodToBeUpdated.serving)")
+
         foodToBeUpdated.serving = Int(newValue)
-        print("Value changed in VC: \(newValue)")
+        // print("Value changed in VC: \(newValue)")
         
         cell.servingLabel.text = "已選 \(String(format: "%.0f", newValue)) 份"
     }

@@ -28,31 +28,12 @@ class FoodTableViewCell: UITableViewCell {
         
         // Pass the new value to ShoppingListVC and notify which cell to update using tag.
         print("sender.value: \(sender.value)")
-        //print("stepper.value: \(stepper.value)")
-        //print("stepper.tag: \(stepper.tag)")
         delegate?.stepper(stepper, at: stepper.tag, didChangeValueTo: sender.value)
-        
-        //NotificationCenter.default.post(name: .updateToList, object: nil, userInfo: ["servingFromStepper" : sender.value])
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        print(stepper.value)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(changeStepperValue(notification:)), name: .updateToStepper, object: nil)
-    }
-    
-    @objc func changeStepperValue(notification: Notification) {
-        
-        if let foodServing = notification.userInfo?["servingFromList"] as? Int {
-            
-            stepper.value = Double(foodServing)
-            print("-- stepper.value = \(stepper.value) --")
-        }
-    }
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
