@@ -6,10 +6,21 @@
 //
 
 import UIKit
+import FirebaseFirestore
+
+
+struct FStore {
+    static let collectionName = "orders"
+    static let orderDetail = "orderDetail"
+    static let totalPrice = "totalPrice"
+}
 
 class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    
+    let database = Firestore.firestore()
+    var orderDict = [String: Int]() // Used for saving order details to Firestore
     
     var foodCheckList = [FoodItem]()
     var totalPriceList = [Int]() // total price for each item
@@ -48,15 +59,37 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     }
     
     @IBAction func submitBtnPressed(_ sender: UIButton) {
-        let confirmMessage = "測試"
+        let confirmMessage = "將會把訂單資料儲存到資料庫"
         displayAlert(title: "確定要送出嗎？", message: confirmMessage)
     }
     
     func displayAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "確認", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "確認", style: .default, handler: { action in
+            for order in self.foodCheckList {
+                let foodName = order.name
+                let foodServing = order.serving
+                self.orderDict[foodName] = foodServing
+            }
+            self.writeData(orderDetail: self.orderDict, totalPrice: self.finalTotalPrice)
+        }))
         alert.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Firebase Firestroe Related Methods.
+
+    func writeData(orderDetail: [String: Int], totalPrice: Int) {
+        
+        database.collection(FStore.collectionName).addDocument(data: [
+            FStore.orderDetail: orderDetail,
+            FStore.totalPrice: totalPrice]) { error in
+            if let e = error {
+                print("There was an issue saving data to Firestore: \(e)")
+            } else {
+                print("Successfully saved data.")
+            }
+        }
     }
     
     // MARK: - TableView Delegate & DataSource Methods.
