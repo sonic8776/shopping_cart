@@ -8,19 +8,12 @@
 import UIKit
 import FirebaseFirestore
 
-
-struct FStore {
-    static let collectionName = "orders"
-    static let orderDetail = "orderDetail"
-    static let totalPrice = "totalPrice"
-}
-
 class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
     
     let database = Firestore.firestore()
-    var orderDict = [String: Int]() // Used for saving order details to Firestore
+    var orderDict = [String: [String]]() // Used for saving order details to Firestore
     
     var foodCheckList = [FoodItem]()
     var totalPriceList = [Int]() // total price for each item
@@ -68,8 +61,9 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         alert.addAction(UIAlertAction(title: "確認", style: .default, handler: { action in
             for order in self.foodCheckList {
                 let foodName = order.name
-                let foodServing = order.serving
-                self.orderDict[foodName] = foodServing
+                let foodServingString = "共 \(String(order.serving)) 份"
+                let foodPriceString = "$\(String(order.price)) / 份"
+                self.orderDict[foodName] = [foodServingString, foodPriceString]
             }
             self.writeData(orderDetail: self.orderDict, totalPrice: self.finalTotalPrice)
         }))
@@ -78,12 +72,16 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     }
     
     // MARK: - Firebase Firestroe Related Methods.
-
-    func writeData(orderDetail: [String: Int], totalPrice: Int) {
+    
+    func writeData(orderDetail: [String: [String]], totalPrice: Int) {
+        
+        let timeStamp = FieldValue.serverTimestamp()
         
         database.collection(FStore.collectionName).addDocument(data: [
+        //database.collection(FStore.collectionName).document(timeStamp).setData([
             FStore.orderDetail: orderDetail,
-            FStore.totalPrice: totalPrice]) { error in
+            FStore.totalPrice: totalPrice,
+            FStore.timeStamp: timeStamp]) { error in
             if let e = error {
                 print("There was an issue saving data to Firestore: \(e)")
             } else {

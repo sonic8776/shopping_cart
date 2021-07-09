@@ -27,7 +27,7 @@ class FoodTableViewCell: UITableViewCell {
         servingLabel.text = "已選 \(String(format: "%.0f", sender.value)) 份"
         
         // Pass the new value to ShoppingListVC and notify which cell to update using tag.
-        print("sender.value: \(sender.value)")
+        // print("sender.value: \(sender.value)")
         delegate?.stepper(stepper, at: stepper.tag, didChangeValueTo: sender.value)
     }
     

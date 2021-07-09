@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var foodList = [FoodItem]()
+    let database = Firestore.firestore()
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -25,12 +27,13 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.allowsSelection = false
         
-        for i in 1...5 {
-            let testItem = FoodItem(name: "便當\(i)", price: Int.random(in: 60...100), serving: Int.random(in: 1...10))
-            self.foodList.append(testItem)
-        }
+//        for i in 1...5 {
+//            let testItem = FoodItem(name: "便當\(i)", price: Int.random(in: 60...100), serving: Int.random(in: 1...10))
+//            self.foodList.append(testItem)
+//        }
+        loadOrder()
     }
-
+    
     @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
         
         let alertController = UIAlertController(title: "新增項目", message: "", preferredStyle: UIAlertController.Style.alert)
@@ -71,6 +74,40 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alertController.addAction(cancelAction)
         
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    // MARK: - Firestore method
+    
+    func loadOrder() {
+        
+        //database.collection(FStore.collectionName).order(by: FStore.timeStamp).limit(to: 1).addSnapshotListener
+        database.collection(FStore.collectionName).order(by: FStore.timeStamp).limit(to: 1).getDocuments { (snapShot, error) in
+            
+            self.foodList = []
+            
+            if let e = error {
+                print("There was an issue retrieving data from Firestore. \(e)")
+            }
+            if let snapShotDocuments = snapShot?.documents,
+               let doc = snapShotDocuments.first {
+                let data = doc.data()
+                if let orderDetail = data[FStore.orderDetail] as? [String: Int] {
+                    // Convert to FoodItem and Append back to foodList
+                    for food in orderDetail {
+                        let name = food.key
+                        let price = food.value
+                        let serving = food.value
+                        let newFood = FoodItem(name: name, price: price, serving: serving)
+                        self.foodList.append(newFood)
+                    }
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                    print("Successfully loaded data from Firestore.")
+                }
+            }
+            
+        }
     }
     
     // MARK: - Table view data source
@@ -140,16 +177,10 @@ extension ShoppingListVC: FoodTableViewCellDelegate {
         let foodToBeUpdated = foodList[indexPath.row]
         
         // print("foodToBeUpdated.serving: \(foodToBeUpdated.serving)")
-
+        
         foodToBeUpdated.serving = Int(newValue)
         // print("Value changed in VC: \(newValue)")
         
         cell.servingLabel.text = "已選 \(String(format: "%.0f", newValue)) 份"
     }
-}
-
-// Define Notification Name.
-extension Notification.Name {
-    static let updateToStepper = Notification.Name("updateToStepper")
-    static let updateToList = Notification.Name("updateToList")
 }
