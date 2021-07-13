@@ -80,8 +80,11 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func loadOrder() {
         
-        //database.collection(FStore.collectionName).order(by: FStore.timeStamp).limit(to: 1).addSnapshotListener
-        database.collection(FStore.collectionName).order(by: FStore.timeStamp).limit(to: 1).getDocuments { (snapShot, error) in
+        database.collection(FStore.collectionName).order(by: FStore.timeStamp, descending: true).limit(to: 1).addSnapshotListener
+        //database.collection(FStore.collectionName).order(by: FStore.timeStamp).limit(to: 1).getDocuments
+        { (snapShot, error) in
+            
+            print("inside closure")
             
             self.foodList = []
             
@@ -90,13 +93,21 @@ class ShoppingListVC: UIViewController, UITableViewDataSource, UITableViewDelega
             }
             if let snapShotDocuments = snapShot?.documents,
                let doc = snapShotDocuments.first {
+                
+                print("Found document.")
+                
                 let data = doc.data()
-                if let orderDetail = data[FStore.orderDetail] as? [String: Int] {
-                    // Convert to FoodItem and Append back to foodList
+                
+                print(FStore.orderDetail)
+                
+                if let orderDetail = data[FStore.orderDetail] as? [String: [Int]] {
+                    
+                    print("Found order detail.")
+                    // Convert to FoodItem and append back to foodList
                     for food in orderDetail {
                         let name = food.key
-                        let price = food.value
-                        let serving = food.value
+                        let serving = food.value[0]
+                        let price = food.value[1]
                         let newFood = FoodItem(name: name, price: price, serving: serving)
                         self.foodList.append(newFood)
                     }

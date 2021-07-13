@@ -13,7 +13,7 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     @IBOutlet weak var tableView: UITableView!
     
     let database = Firestore.firestore()
-    var orderDict = [String: [String]]() // Used for saving order details to Firestore
+    var orderDict = [String: [Int]]() // Used for saving order details to Firestore
     
     var foodCheckList = [FoodItem]()
     var totalPriceList = [Int]() // total price for each item
@@ -40,8 +40,8 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         }
         totalPriceList.append(finalTotalPrice)
         
-        let finalFood = FoodItem(name: "總計", price: finalTotalPrice, serving: 0)
-        foodCheckList.append(finalFood)
+//        let finalFood = FoodItem(name: "總計", price: finalTotalPrice, serving: 0)
+//        foodCheckList.append(finalFood)
     }
     
     override func viewDidLoad() {
@@ -61,11 +61,13 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         alert.addAction(UIAlertAction(title: "確認", style: .default, handler: { action in
             for order in self.foodCheckList {
                 let foodName = order.name
-                let foodServingString = "共 \(String(order.serving)) 份"
-                let foodPriceString = "$\(String(order.price)) / 份"
-                self.orderDict[foodName] = [foodServingString, foodPriceString]
+//                let foodServingString = "共 \(String(order.serving)) 份"
+//                let foodPriceString = "$\(String(order.price)) / 份"
+                let foodServing = order.serving
+                let foodPrice = order.price
+                self.orderDict[foodName] = [foodServing, foodPrice]
             }
-            self.writeData(orderDetail: self.orderDict, totalPrice: self.finalTotalPrice)
+            self.writeData(orderDetail: self.orderDict)
         }))
         alert.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -73,15 +75,14 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     
     // MARK: - Firebase Firestroe Related Methods.
     
-    func writeData(orderDetail: [String: [String]], totalPrice: Int) {
+    func writeData(orderDetail: [String: [Int]]) {
         
         let timeStamp = FieldValue.serverTimestamp()
         
         database.collection(FStore.collectionName).addDocument(data: [
         //database.collection(FStore.collectionName).document(timeStamp).setData([
-            FStore.orderDetail: orderDetail,
-            FStore.totalPrice: totalPrice,
-            FStore.timeStamp: timeStamp]) { error in
+            FStore.timeStamp: timeStamp,
+            FStore.orderDetail: orderDetail]) { error in
             if let e = error {
                 print("There was an issue saving data to Firestore: \(e)")
             } else {
