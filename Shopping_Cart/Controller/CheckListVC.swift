@@ -49,6 +49,7 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.allowsSelection = false
     }
     
     @IBAction func submitBtnPressed(_ sender: UIButton) {
