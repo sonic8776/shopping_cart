@@ -183,26 +183,37 @@
                                             <outlet property="totalLabel" destination="YgC-Jx-nYx" id="6Sf-Ko-sMU"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="infoCell" id="uzK-iA-cLw">
-                                        <rect key="frame" x="0.0" y="68" width="375" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="infoCell" id="uzK-iA-cLw" customClass="InfoTableViewCell" customModule="Shopping_Cart" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="68" width="375" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uzK-iA-cLw" id="vhQ-Eg-nmm">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="liv-0e-xON">
-                                                    <rect key="frame" x="16" y="4" width="343" height="34.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FinalTotal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QFl-fx-GRt">
+                                                    <rect key="frame" x="291" y="11.5" width="73" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="總金額" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0cb-bu-eFf">
+                                                    <rect key="frame" x="21" y="11.5" width="52" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="liv-0e-xON" firstAttribute="top" secondItem="vhQ-Eg-nmm" secondAttribute="top" constant="4" id="1Yj-Fg-vqE"/>
-                                                <constraint firstAttribute="bottom" secondItem="liv-0e-xON" secondAttribute="bottom" constant="5.5" id="2Uf-hh-SeT"/>
-                                                <constraint firstAttribute="trailing" secondItem="liv-0e-xON" secondAttribute="trailing" constant="16" id="H0N-Hp-jGw"/>
-                                                <constraint firstItem="liv-0e-xON" firstAttribute="leading" secondItem="vhQ-Eg-nmm" secondAttribute="leading" constant="16" id="uA9-fC-wNL"/>
+                                                <constraint firstItem="QFl-fx-GRt" firstAttribute="trailing" secondItem="vhQ-Eg-nmm" secondAttribute="trailingMargin" constant="5" id="A5o-Qv-Lft"/>
+                                                <constraint firstItem="QFl-fx-GRt" firstAttribute="centerY" secondItem="vhQ-Eg-nmm" secondAttribute="centerY" id="PyQ-iG-uG5"/>
+                                                <constraint firstItem="0cb-bu-eFf" firstAttribute="leading" secondItem="vhQ-Eg-nmm" secondAttribute="leadingMargin" constant="5" id="uRP-5V-Efp"/>
+                                                <constraint firstItem="0cb-bu-eFf" firstAttribute="centerY" secondItem="vhQ-Eg-nmm" secondAttribute="centerY" id="wi0-6p-mGm"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="finalTotalPriceLabel" destination="QFl-fx-GRt" id="qcH-rX-9bi"/>
+                                            <outlet property="infoLabel" destination="0cb-bu-eFf" id="uvZ-qU-bwY"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6B25E6B4D7CB3F43BC55D930 /* Pods_Shopping_Cart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1E183D5EEA79FE9902EE124 /* Pods_Shopping_Cart.framework */; };
+		DE300093269D90F0005772F0 /* InfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE300092269D90F0005772F0 /* InfoTableViewCell.swift */; };
 		DE310915268EADC300291296 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE310914268EADC300291296 /* AppDelegate.swift */; };
 		DE310917268EADC300291296 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE310916268EADC300291296 /* SceneDelegate.swift */; };
 		DE310919268EADC300291296 /* CheckListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE310918268EADC300291296 /* CheckListVC.swift */; };
@@ -26,6 +27,7 @@
 		15A32D4C2A6579CAB65B26FB /* Pods-Shopping_Cart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shopping_Cart.release.xcconfig"; path = "Target Support Files/Pods-Shopping_Cart/Pods-Shopping_Cart.release.xcconfig"; sourceTree = "<group>"; };
 		B1E183D5EEA79FE9902EE124 /* Pods_Shopping_Cart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shopping_Cart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0086A14DA744DECB0F679C2 /* Pods-Shopping_Cart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shopping_Cart.debug.xcconfig"; path = "Target Support Files/Pods-Shopping_Cart/Pods-Shopping_Cart.debug.xcconfig"; sourceTree = "<group>"; };
+		DE300092269D90F0005772F0 /* InfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTableViewCell.swift; sourceTree = "<group>"; };
 		DE310911268EADC300291296 /* Shopping_Cart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopping_Cart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE310914268EADC300291296 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE310916268EADC300291296 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				DE31091A268EADC300291296 /* Main.storyboard */,
 				DE954D55268EC20A00B99D01 /* FoodTableViewCell.swift */,
 				DEB7AE4A2693FD7A00DB3A11 /* CheckTableViewCell.swift */,
+				DE300092269D90F0005772F0 /* InfoTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				DEB7AE4B2693FD7A00DB3A11 /* CheckTableViewCell.swift in Sources */,
 				DE310919268EADC300291296 /* CheckListVC.swift in Sources */,
 				DEB7AE812697600F00DB3A11 /* FStore.swift in Sources */,
+				DE300093269D90F0005772F0 /* InfoTableViewCell.swift in Sources */,
 				DE954D52268EBBAC00B99D01 /* FoodItem.swift in Sources */,
 				DE310915268EADC300291296 /* AppDelegate.swift in Sources */,
 				DE310917268EADC300291296 /* SceneDelegate.swift in Sources */,

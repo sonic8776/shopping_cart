@@ -9,7 +9,7 @@ import UIKit
 import FirebaseFirestore
 
 class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var tableView: UITableView!
     
     let database = Firestore.firestore()
@@ -21,7 +21,7 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     
     var storeInfo = [String]() // storeName, storePhone, customerName
     
-    let sections = ["訂單總計", "商家資訊"]
+    let sections = ["訂單總計", "總計"]
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,10 +38,10 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
             total += price
             finalTotalPrice = total
         }
-        totalPriceList.append(finalTotalPrice)
+        //totalPriceList.append(finalTotalPrice)
         
-//        let finalFood = FoodItem(name: "總計", price: finalTotalPrice, serving: 0)
-//        foodCheckList.append(finalFood)
+        //        let finalFood = FoodItem(name: "總計", price: finalTotalPrice, serving: 0)
+        //        foodCheckList.append(finalFood)
     }
     
     override func viewDidLoad() {
@@ -61,13 +61,13 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         alert.addAction(UIAlertAction(title: "確認", style: .default, handler: { action in
             for order in self.foodCheckList {
                 let foodName = order.name
-//                let foodServingString = "共 \(String(order.serving)) 份"
-//                let foodPriceString = "$\(String(order.price)) / 份"
+                //                let foodServingString = "共 \(String(order.serving)) 份"
+                //                let foodPriceString = "$\(String(order.price)) / 份"
                 let foodServing = order.serving
                 let foodPrice = order.price
                 self.orderDict[foodName] = [foodServing, foodPrice]
             }
-            self.writeData(orderDetail: self.orderDict)
+            self.writeData(orderDetail: self.orderDict, totalPrice: self.finalTotalPrice)
         }))
         alert.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -75,14 +75,14 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     
     // MARK: - Firebase Firestroe Related Methods.
     
-    func writeData(orderDetail: [String: [Int]]) {
+    func writeData(orderDetail: [String: [Int]], totalPrice: Int) {
         
         let timeStamp = FieldValue.serverTimestamp()
         
         database.collection(FStore.collectionName).addDocument(data: [
-        //database.collection(FStore.collectionName).document(timeStamp).setData([
             FStore.timeStamp: timeStamp,
-            FStore.orderDetail: orderDetail]) { error in
+            FStore.orderDetail: orderDetail,
+            FStore.totalPrice: totalPrice]) { error in
             if let e = error {
                 print("There was an issue saving data to Firestore: \(e)")
             } else {
@@ -100,56 +100,34 @@ class CheckListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sections[section]
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         if section == 0 {
             return foodCheckList.count
         } else {
-            return 3
+            return 1
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "checkCell", for: indexPath) as! CheckTableViewCell
+            cell.nameLabel.text = foodCheckList[indexPath.row].name
             
-            if indexPath.row != foodCheckList.count - 1 {
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "checkCell", for: indexPath) as! CheckTableViewCell
-                cell.nameLabel.text = foodCheckList[indexPath.row].name
-                
-                let amount = "\(String(foodCheckList[indexPath.row].serving)) 份"
-                cell.amountLabel.text = amount
-                
-                let totalPrice = "$ \(String(totalPriceList[indexPath.row]))"
-                cell.totalLabel.text = totalPrice
-                
-                return cell
-                
-            } else {
-                
-                // Show the last cell to indicate the total price.
-                let cell = tableView.dequeueReusableCell(withIdentifier: "checkCell", for: indexPath) as! CheckTableViewCell
-                cell.nameLabel.text = foodCheckList[indexPath.row].name
-                cell.nameLabel.font = UIFont.boldSystemFont(ofSize: 16)
-                cell.nameLabel.textColor = UIColor(red: 225/255, green: 89/255, blue: 66/255, alpha: 1)
-                
-                cell.amountLabel.text = ""
-                
-                let totalPrice = "$ \(String(totalPriceList[indexPath.row]))"
-                cell.totalLabel.text = totalPrice
-                cell.totalLabel.font = UIFont.boldSystemFont(ofSize: 16)
-                cell.totalLabel.textColor = UIColor(red: 225/255, green: 89/255, blue: 66/255, alpha: 1)
-                
-                return cell
-             
-            }
+            let amount = "\(String(foodCheckList[indexPath.row].serving)) 份"
+            cell.amountLabel.text = amount
             
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "infoCell", for: indexPath)
-            cell.textLabel?.text = ""
+            let totalPrice = "$ \(String(totalPriceList[indexPath.row]))"
+            cell.totalLabel.text = totalPrice
+            
             return cell
+        } else {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "infoCell", for: indexPath) as! InfoTableViewCell
+        cell.finalTotalPriceLabel?.text = "$\(String(finalTotalPrice))"
+        cell.finalTotalPriceLabel.textColor = UIColor(red: 225/255, green: 89/255, blue: 66/255, alpha: 1)
+        cell.infoLabel.textColor = UIColor(red: 225/255, green: 89/255, blue: 66/255, alpha: 1)
+        return cell
         }
     }
 }
